@@ -512,7 +512,7 @@ def valid_cluster_template(is_public=False):
 def cluster_data(name=data_utils.rand_name('cluster'),
                  cluster_template_id=data_utils.rand_uuid(),
                  node_count=random_int(1, 5), discovery_url=gen_random_ip(),
-                 create_timeout=random_int(1, 30),
+                 create_timeout=None,
                  master_count=random_int(1, 5)):
     """Generates random cluster data
 
@@ -529,13 +529,15 @@ def cluster_data(name=data_utils.rand_name('cluster'),
     :returns: ClusterEntity with generated data
     """
 
+    timeout = create_timeout or config.Config.cluster_creation_timeout
+
     data = {
         "name": name,
         "cluster_template_id": cluster_template_id,
-        "keypair": config.Config.keypair_id,
+        "keypair": config.Config.keypair_name,
         "node_count": node_count,
         "discovery_url": None,
-        "create_timeout": create_timeout,
+        "create_timeout": timeout,
         "master_count": master_count
     }
     model = cluster_model.ClusterEntity.from_dict(data)
